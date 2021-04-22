@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Home from './pages/Home';
 
-type Users = {
+export type Users = {
   id: number;
   name: string;
   following: number[];
   interests?: number[];
 }
 
-type Interests = {
+export type Interests = {
   id: number;
   name: string;
 }
@@ -41,7 +41,7 @@ function App() {
 
   return (
     <div className="app">
-      <Home users={users} interests={interests} />
+      <Home users={users} interests={interests} setUsers={setUsers} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { AppBar, Box, Collapse, List, ListItem, ListItemIcon, ListItemText, ListSubheader, makeStyles, Toolbar, Typography } from '@material-ui/core';
-import { AccountBox, ExpandLess, ExpandMore, Stars } from '@material-ui/icons';
-import { DataTypes } from '../App';
+import { AppBar, Box, Button, Collapse, List, ListItem, ListItemIcon, ListItemText, ListSubheader, makeStyles, Toolbar, Typography } from '@material-ui/core';
+import { AccountBox, Delete, ExpandLess, ExpandMore, Stars } from '@material-ui/icons';
+import { DataTypes, Users, Interests } from '../App';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,15 +19,20 @@ type linkedData = {
 
 }
 
-function Home({ users = [], interests = [] }: DataTypes) {
+interface HomeTypes {
+    users: Users[],
+    interests: Interests[],
+    setUsers: (users: Users[]) => void;
+}
+
+function Home({ users = [], interests = [], setUsers }: HomeTypes) {
     const classes = useStyles();
     const [open, setOpen] = useState(true);
-    const [activeID, setActiveID] = useState<null | number>(null);
     const [linkedData, setLinkedData] = useState<linkedData>({});
 
     const handleClick = (id: number, userIndex: number) => {
         const usersInterests = users[userIndex].interests;
-        const filteredInterests = interests.filter((interest) => usersInterests?.find(item => item == interest.id));
+        const filteredInterests = interests.filter((interest) => usersInterests?.find(item => item === interest.id));
         console.log(filteredInterests);
 
         if(linkedData[`${id}_${userIndex}`]){
@@ -37,8 +42,12 @@ function Home({ users = [], interests = [] }: DataTypes) {
         } else {
             setLinkedData({ ...linkedData, [`${id}_${userIndex}`]: filteredInterests });
         }
-        setActiveID(id);
     };
+
+    const deleteUser = (id: number) => {
+        const filteredUsers = users.filter(user => user.id !== id);
+        setUsers(filteredUsers);
+    }
 
     console.log('linkedData linkedData linkedData', linkedData);
     return (
@@ -73,6 +82,11 @@ function Home({ users = [], interests = [] }: DataTypes) {
                                             {linkedData[`${id}_${userIndex}`] ? <ExpandLess /> : <ExpandMore />}
                                         </>
                                     ) : null}
+                                    <Button
+                                        onClick={() => deleteUser(id)}
+                                    >
+                                        <Delete color='error' />
+                                    </Button>
                                 </ListItem>
                                 {Object.keys(linkedData).length && linkedData[`${id}_${userIndex}`] ? linkedData[`${id}_${userIndex}`].map((interest, index) => (
                                     <Collapse in={open} timeout="auto" unmountOnExit key={interest.id}>

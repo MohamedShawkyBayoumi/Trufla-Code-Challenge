@@ -24,7 +24,7 @@ Or you can run both separately:
 
 * You will find error handling is implemented.<br />
 
-* You will find a loader is implemented based on fetching data from the API.<br />
+* You will find a loader is implemented based on fetching data from the API. if you can't see it, you can change `No throttling` to `Slow 3G` from the `Network` tab in the devtools<br />
 
 * You will see a list of users.<br />
 

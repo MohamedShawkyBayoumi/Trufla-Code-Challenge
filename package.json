@@ -14,6 +14,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "concurrently": "^6.0.2",
     "json-server": "^0.16.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -24,6 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "server": "json-server --watch ./src/db.json --port 8000",
+    "dev": "concurrently \"yarn run server\" \"yarn run start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

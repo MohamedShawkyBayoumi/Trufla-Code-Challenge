@@ -1,3 +1,5 @@
+USERS LIST
+
 This project was bootstrapped with React, Material UI, TypeScript, json-server, concurrently
 ## Installing Dependencies
 
@@ -37,3 +39,5 @@ Or you can run both separately:
 * Each interest has a delete button to delete it.<br />
 
 Thanks Trufla.
+
+![alt text](https://res.cloudinary.com/dymelpf7v/image/upload/v1619216414/users-list.jpg)

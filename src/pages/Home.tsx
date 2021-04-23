@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AppBar, Box, Button, Collapse, List, ListItem, ListItemIcon, ListItemText, ListSubheader, makeStyles, Toolbar, Typography } from '@material-ui/core';
 import { AccountBox, Delete, DeleteForever, ExpandLess, ExpandMore, Stars } from '@material-ui/icons';
-import { DataTypes, Users, Interests } from '../App';
+import { Users } from '../App';
 
 const useStyles = makeStyles((theme) => ({
     listStyles: {
@@ -18,9 +18,6 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: theme.spacing(10),
     },
     boxContainer: {
-        // background: "url('https://a0.muscache.com/im/pictures/80ac6baf-ea77-4d14-bbb7-c91a4230b20a.jpg?im_q=highq&im_w=720')",
-        // height: '100%',
-        // width: '100%',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -28,33 +25,30 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-type linkedData = {
-    [key: string]: DataTypes['interests'];
-
+type ActiveInterests = {
+    [key: string]: number[];
 }
 
 interface HomeTypes {
     users: Users[],
-    interests: Interests[],
     setUsers: (users: Users[]) => void;
 }
 
-function Home({ users = [], interests = [], setUsers }: HomeTypes) {
+function Home({ users = [], setUsers }: HomeTypes) {
     const classes = useStyles();
-    const [open, setOpen] = useState(true);
-    const [linkedData, setLinkedData] = useState<linkedData>({});
+    const [activeIDs, setActiveIDs] = useState<ActiveInterests>({});
 
-    const handleClick = (id: number, userIndex: number) => {
-        const usersInterests = users[userIndex].interests;
-        const filteredInterests = interests.filter((interest) => usersInterests?.find(item => item === interest.id));
-        console.log(filteredInterests);
-
-        if(linkedData[`${id}_${userIndex}`]){
-            const filteredLinkedData = Object.assign({}, linkedData);
-            delete filteredLinkedData[`${id}_${userIndex}`];
-            setLinkedData(filteredLinkedData);
+    const handleClick = (id: number, userIndex: number, interests: number[]) => {
+        let IDs = Object.assign({}, activeIDs);
+        
+        if(IDs[`${id}_${userIndex}`]){
+            delete IDs[`${id}_${userIndex}`]
+            setActiveIDs(IDs);
         } else {
-            setLinkedData({ ...linkedData, [`${id}_${userIndex}`]: filteredInterests });
+            setActiveIDs({
+                ...activeIDs,
+                [`${id}_${userIndex}`]: interests
+            });
         }
     };
 
@@ -63,18 +57,19 @@ function Home({ users = [], interests = [], setUsers }: HomeTypes) {
         setUsers(filteredUsers);
     }
 
-    const deleteInterest = (userId: number, userIndex: number, interestId: number) => {
+    const deleteInterest = (userIndex: number, interestId: number) => {
+
         const copiedUsers = [...users];
-        const copiedLinkedData = Object.assign({}, linkedData);
 
-        const filteredInterest = copiedUsers[userIndex]?.interests?.find(interest => interest !== interestId);
+        let filteredInterests = copiedUsers[userIndex].interests?.filter(i => i !== interestId);
+        let filteredInterestsData = copiedUsers[userIndex].interestsData?.filter(i => i.id !== interestId);
 
-        copiedLinkedData[`${userId}_${userIndex}`] = copiedLinkedData[`${userId}_${userIndex}`]?.filter(item => item.id === filteredInterest);
+        copiedUsers[userIndex].interests = filteredInterests;
+        copiedUsers[userIndex].interestsData = filteredInterestsData;
 
-        setLinkedData(copiedLinkedData);
+        setUsers(copiedUsers);
     }
 
-    console.log('linkedData linkedData linkedData', linkedData);
     return (
         <div style={{ minHeight: '100vh' }}>
             <AppBar position="static">
@@ -97,17 +92,17 @@ function Home({ users = [], interests = [], setUsers }: HomeTypes) {
                     }
                     className={classes.listStyles}
                     >
-                        {users.map(({ id, name, following, interests = [] }, userIndex) => {
+                        {users.map(({ id, name, following, interests = [], interestsData = [] }, userIndex) => {
                             return(
                                 <Box key={id}>
-                                    <ListItem button={interests.length > 0 ? true : true} onClick={() => interests.length > 0 ? handleClick(id, userIndex) : {}}>
+                                    <ListItem button={interests.length > 0 ? true : true} onClick={() => interests.length > 0 ? handleClick(id, userIndex, interests) : {}}>
                                         <ListItemIcon>
                                             <AccountBox />
                                         </ListItemIcon>
                                         <ListItemText primary={name} />
-                                        {interests.length ? (
+                                        {interestsData.length ? (
                                             <>
-                                                {linkedData[`${id}_${userIndex}`] ? <ExpandLess /> : <ExpandMore />}
+                                                {activeIDs[`${id}_${userIndex}`] ? <ExpandLess /> : <ExpandMore />}
                                             </>
                                         ) : null}
                                         <Button
@@ -116,8 +111,8 @@ function Home({ users = [], interests = [], setUsers }: HomeTypes) {
                                             <Delete color='error' />
                                         </Button>
                                     </ListItem>
-                                    {Object.keys(linkedData).length && linkedData[`${id}_${userIndex}`] ? linkedData[`${id}_${userIndex}`].map((interest, interestIndex) => (
-                                        <Collapse in={open} timeout="auto" unmountOnExit key={interest.id}>
+                                    {Object.keys(interestsData).length ? interestsData.map((interest, interestIndex) => (
+                                        <Collapse in={!!activeIDs[`${id}_${userIndex}`]} timeout="auto" unmountOnExit key={interest.id}>
                                             <List component="div" disablePadding>
                                                 <ListItem button className={classes.nested}>
                                                     <ListItemIcon>
@@ -125,7 +120,7 @@ function Home({ users = [], interests = [], setUsers }: HomeTypes) {
                                                     </ListItemIcon>
                                                     <ListItemText primary={interest.name} />
                                                     <Button
-                                                        onClick={() => deleteInterest(id, userIndex, interest.id)}
+                                                        onClick={() => deleteInterest(userIndex, interest.id)}
                                                     >
                                                         <DeleteForever color='error' />
                                                     </Button>

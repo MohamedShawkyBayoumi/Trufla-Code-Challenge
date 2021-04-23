@@ -7,6 +7,14 @@ export type Users = {
   name: string;
   following: number[];
   interests?: number[];
+  interestsData?: Interests[];
+}
+
+export type TransformedUsers = {
+  id: number;
+  name: string;
+  following: number[];
+  interests?: Interests[];
 }
 
 export type Interests = {
@@ -28,8 +36,24 @@ function App() {
     try {
       let response = await fetch("http://localhost:8000/data");
       let result = await response.json() as DataTypes;
-      setUsers(result?.users);
-      setInterests(result?.interests);
+
+      const usersResult = [...result?.users];
+      const usersInterests = [...result?.interests];
+
+      let transformedUsers = usersResult.map((user) => {
+
+        let filteredInterests = usersInterests.filter((interest) => user?.interests?.find((i: number) => i == interest.id));
+
+        let transformedUser = {
+          ...user,
+          interestsData: filteredInterests
+        }
+
+        return transformedUser;
+      });
+
+      setUsers(transformedUsers);
+
     } catch (e) {
       console.log(e);
     }
@@ -41,7 +65,7 @@ function App() {
 
   return (
     <div className="app">
-      <Home users={users} interests={interests} setUsers={setUsers} />
+      <Home users={users} setUsers={setUsers} />
     </div>
   );
 }

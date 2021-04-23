@@ -6,7 +6,7 @@ import { Interests } from '../App';
 const useStyles = makeStyles((theme) => ({
     badgeStyles: {
         marginRight: theme.spacing(4),
-    },
+    }
 }));
 
 interface UserItemTypes {

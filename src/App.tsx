@@ -10,13 +10,6 @@ export type Users = {
   interestsData?: Interests[];
 }
 
-export type TransformedUsers = {
-  id: number;
-  name: string;
-  following: number[];
-  interests?: Interests[];
-}
-
 export type Interests = {
   id: number;
   name: string;
@@ -28,7 +21,6 @@ export interface DataTypes {
 }
 
 function App() {
-
   const [users, setUsers] = useState<Users[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -68,7 +60,12 @@ function App() {
 
   return (
     <div className="app">
-      <Home users={users} setUsers={setUsers} isLoading={isLoading} isError={isError} />
+      <Home
+        users={users}
+        setUsers={setUsers}
+        isLoading={isLoading}
+        isError={isError}
+      />
     </div>
   );
 }

@@ -5,9 +5,9 @@ In the project root directory
 
 ### `yarn install`
 
-## Available Scripts To Run The Projects
+## Available Scripts To Run The App
 
-In the project root directory, if you want to run both project server ( Fake API ) and client at the same time, you can run:
+In the App root directory, if you want to run both server ( Fake API ) and client at the same time, you can run:
 
 ### `yarn run dev`
 

@@ -29,6 +29,13 @@ const useStyles = makeStyles((theme) => ({
     },
     centerStyle: {
         textAlign: 'center'
+    },
+    toolbar: {
+        justifyContent: 'center'
+    },
+    title: {
+        textTransform: 'uppercase',
+        letterSpacing: 5
     }
 }));
 
@@ -82,8 +89,8 @@ function Home({ users = [], setUsers, isLoading, isError }: HomeTypes) {
     return (
         <div style={{ minHeight: '100vh' }}>
             <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" >
+                <Toolbar className={classes.toolbar}>
+                    <Typography variant="h6" className={classes.title}>
                         Users List
                     </Typography>
                 </Toolbar>

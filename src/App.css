@@ -1,4 +1,7 @@
 .app {
   background-color: #ddd;
   min-height: 100vh;
+  background: url("https://images.unsplash.com/photo-1568503446072-5c1c17d9b018?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3450&q=80") no-repeat center center;
+  background-size: cover;
+  width: 100%;
 }

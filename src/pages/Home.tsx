@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
 import { AppBar, Box, Button, Collapse, List, ListItem, ListItemIcon, ListItemText, ListSubheader, makeStyles, Toolbar, Typography } from '@material-ui/core';
-import { AccountBox, Delete, ExpandLess, ExpandMore, Stars } from '@material-ui/icons';
+import { AccountBox, Delete, DeleteForever, ExpandLess, ExpandMore, Stars } from '@material-ui/icons';
 import { DataTypes, Users, Interests } from '../App';
 
 const useStyles = makeStyles((theme) => ({
-    root: {
+    listStyles: {
+        marginTop: 100,
+        paddingTop: 20,
+        paddingBottom: 20,
       width: '100%',
       maxWidth: 500,
       backgroundColor: theme.palette.background.paper,
+      borderRadius: 20
     },
     nested: {
       paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(10),
     },
+    boxContainer: {
+        // background: "url('https://a0.muscache.com/im/pictures/80ac6baf-ea77-4d14-bbb7-c91a4230b20a.jpg?im_q=highq&im_w=720')",
+        // height: '100%',
+        // width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100%'
+    }
 }));
 
 type linkedData = {
@@ -49,9 +63,20 @@ function Home({ users = [], interests = [], setUsers }: HomeTypes) {
         setUsers(filteredUsers);
     }
 
+    const deleteInterest = (userId: number, userIndex: number, interestId: number) => {
+        const copiedUsers = [...users];
+        const copiedLinkedData = Object.assign({}, linkedData);
+
+        const filteredInterest = copiedUsers[userIndex]?.interests?.find(interest => interest !== interestId);
+
+        copiedLinkedData[`${userId}_${userIndex}`] = copiedLinkedData[`${userId}_${userIndex}`]?.filter(item => item.id === filteredInterest);
+
+        setLinkedData(copiedLinkedData);
+    }
+
     console.log('linkedData linkedData linkedData', linkedData);
     return (
-        <div>
+        <div style={{ minHeight: '100vh' }}>
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" >
@@ -59,51 +84,60 @@ function Home({ users = [], interests = [], setUsers }: HomeTypes) {
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <List
-                component="nav"
-                aria-labelledby="nested-list-subheader"
-                subheader={
-                    <ListSubheader component="div" id="nested-list-subheader">
-                        Users with their interests
-                    </ListSubheader>
-                }
-                className={classes.root}
-                >
-                    {users.map(({ id, name, following, interests = [] }, userIndex) => {
-                        return(
-                            <Box key={id}>
-                                <ListItem button={interests.length > 0 ? true : true} onClick={() => interests.length > 0 ? handleClick(id, userIndex) : {}}>
-                                    <ListItemIcon>
-                                        <AccountBox />
-                                    </ListItemIcon>
-                                    <ListItemText primary={name} />
-                                    {interests.length ? (
-                                        <>
-                                            {linkedData[`${id}_${userIndex}`] ? <ExpandLess /> : <ExpandMore />}
-                                        </>
-                                    ) : null}
-                                    <Button
-                                        onClick={() => deleteUser(id)}
-                                    >
-                                        <Delete color='error' />
-                                    </Button>
-                                </ListItem>
-                                {Object.keys(linkedData).length && linkedData[`${id}_${userIndex}`] ? linkedData[`${id}_${userIndex}`].map((interest, index) => (
-                                    <Collapse in={open} timeout="auto" unmountOnExit key={interest.id}>
-                                        <List component="div" disablePadding>
-                                            <ListItem button className={classes.nested}>
-                                                <ListItemIcon>
-                                                    <Stars />
-                                                </ListItemIcon>
-                                                <ListItemText primary={interest.name} />
-                                            </ListItem>
-                                        </List>
-                                    </Collapse>
-                                )): null}
-                            </Box>
-                        )
-                    })}
-            </List>
+            <Box
+                className={classes.boxContainer}
+            >
+                <List
+                    component="nav"
+                    aria-labelledby="nested-list-subheader"
+                    subheader={
+                        <ListSubheader component="div" id="nested-list-subheader">
+                            Users with their interests
+                        </ListSubheader>
+                    }
+                    className={classes.listStyles}
+                    >
+                        {users.map(({ id, name, following, interests = [] }, userIndex) => {
+                            return(
+                                <Box key={id}>
+                                    <ListItem button={interests.length > 0 ? true : true} onClick={() => interests.length > 0 ? handleClick(id, userIndex) : {}}>
+                                        <ListItemIcon>
+                                            <AccountBox />
+                                        </ListItemIcon>
+                                        <ListItemText primary={name} />
+                                        {interests.length ? (
+                                            <>
+                                                {linkedData[`${id}_${userIndex}`] ? <ExpandLess /> : <ExpandMore />}
+                                            </>
+                                        ) : null}
+                                        <Button
+                                            onClick={() => deleteUser(id)}
+                                        >
+                                            <Delete color='error' />
+                                        </Button>
+                                    </ListItem>
+                                    {Object.keys(linkedData).length && linkedData[`${id}_${userIndex}`] ? linkedData[`${id}_${userIndex}`].map((interest, interestIndex) => (
+                                        <Collapse in={open} timeout="auto" unmountOnExit key={interest.id}>
+                                            <List component="div" disablePadding>
+                                                <ListItem button className={classes.nested}>
+                                                    <ListItemIcon>
+                                                        <Stars />
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={interest.name} />
+                                                    <Button
+                                                        onClick={() => deleteInterest(id, userIndex, interest.id)}
+                                                    >
+                                                        <DeleteForever color='error' />
+                                                    </Button>
+                                                </ListItem>
+                                            </List>
+                                        </Collapse>
+                                    )): null}
+                                </Box>
+                            )
+                        })}
+                </List>
+            </Box>
         </div>
     )
 }

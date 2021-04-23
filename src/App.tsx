@@ -30,9 +30,12 @@ export interface DataTypes {
 function App() {
 
   const [users, setUsers] = useState<Users[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const getData = async () => {
     try {
+      setIsLoading(true);
       let response = await fetch("http://localhost:8000/data");
       let result = await response.json() as DataTypes;
 
@@ -52,9 +55,10 @@ function App() {
       });
 
       setUsers(transformedUsers);
-
+      setIsLoading(false);
     } catch (e) {
-      console.log(e);
+      setIsLoading(false);
+      setIsError(true);
     }
   };
 
@@ -64,7 +68,7 @@ function App() {
 
   return (
     <div className="app">
-      <Home users={users} setUsers={setUsers} />
+      <Home users={users} setUsers={setUsers} isLoading={isLoading} isError={isError} />
     </div>
   );
 }

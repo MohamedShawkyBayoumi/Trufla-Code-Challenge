@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AppBar, Box, List, ListSubheader, makeStyles, Toolbar, Typography } from '@material-ui/core';
+import { AppBar, Box, List, ListSubheader, makeStyles, Toolbar, Typography, CircularProgress } from '@material-ui/core';
 import { Users } from '../App';
 import { UserInterests } from '../components/UserInterests';
 import { UserItem } from '../components/UserItem';
@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         alignItems: 'center',
         minHeight: '100%'
+    },
+    centerStyle: {
+        textAlign: 'center'
     }
 }));
 
@@ -36,9 +39,11 @@ type ActiveInterests = {
 interface HomeTypes {
     users: Users[],
     setUsers: (users: Users[]) => void;
+    isLoading: boolean;
+    isError: boolean;
 }
 
-function Home({ users = [], setUsers }: HomeTypes) {
+function Home({ users = [], setUsers, isLoading, isError }: HomeTypes) {
     const classes = useStyles();
     const [activeIDs, setActiveIDs] = useState<ActiveInterests>({});
 
@@ -96,34 +101,46 @@ function Home({ users = [], setUsers }: HomeTypes) {
                     }
                     className={classes.listStyles}
                     >
-                        {users.map(({ id, name, following = [], interests = [], interestsData = [] }, userIndex) => {
-                            const isActive = !!activeIDs[`${id}_${userIndex}`];
-                            return(
-                                <Box key={id}>
-                                    <UserItem
-                                        key={id}
-                                        deleteUser={deleteUser}
-                                        following={following}
-                                        handleClick={handleClick}
-                                        id={id}
-                                        interests={interests}
-                                        interestsData={interestsData}
-                                        name={name}
-                                        userIndex={userIndex}
-                                        isActive={isActive}
-                                    />
-                                    {Object.keys(interestsData).length ? interestsData.map((interest) => (
-                                        <UserInterests
-                                            key={interest.id}
-                                            isOpen={!!isActive}
-                                            deleteInterest={deleteInterest}
+                        {isLoading ? (
+                            <Box className={classes.centerStyle}>
+                                {/* show loader while fetching data */}
+                                <CircularProgress />
+                            </Box>
+                        ) : 
+                            users.length ? users.map(({ id, name, following = [], interests = [], interestsData = [] }, userIndex) => {
+                                const isActive = !!activeIDs[`${id}_${userIndex}`];
+                                return(
+                                    <Box key={id}>
+                                        <UserItem
+                                            key={id}
+                                            deleteUser={deleteUser}
+                                            following={following}
+                                            handleClick={handleClick}
+                                            id={id}
+                                            interests={interests}
+                                            interestsData={interestsData}
+                                            name={name}
                                             userIndex={userIndex}
-                                            interest={interest}
+                                            isActive={isActive}
                                         />
-                                    )): null}
-                                </Box>
+                                        {Object.keys(interestsData).length ? interestsData.map((interest) => (
+                                            <UserInterests
+                                                key={interest.id}
+                                                isOpen={!!isActive}
+                                                deleteInterest={deleteInterest}
+                                                userIndex={userIndex}
+                                                interest={interest}
+                                            />
+                                        )): null}
+                                    </Box>
+                                )
+                            }): (
+                                <Typography className={classes.centerStyle} color={isError ? 'error' : 'textPrimary'}>
+                                    {/* show error msg if the network has issue, or showing no users if there is no any user */}
+                                    {isError ? 'Something went wrong when fetching data.' : 'There is no users.'}
+                                </Typography>
                             )
-                        })}
+                        }
                 </List>
             </Box>
         </div>

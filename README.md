@@ -38,8 +38,7 @@ Or you can run both separately:
 
 * Each interest has a delete button to delete it.<br />
 
-You can check me previous task for Trufla ( Full Stack App ) from the following Repo link
-[Trufla_task](https://github.com/MohamedShawkyBayoumi/Trufla_task)
+### You can check my previous task for Trufla ( Full Stack App ) from the following Repo link [Trufla_task](https://github.com/MohamedShawkyBayoumi/Trufla_task)
 
 Thanks Trufla.
 

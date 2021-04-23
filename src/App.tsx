@@ -30,7 +30,6 @@ export interface DataTypes {
 function App() {
 
   const [users, setUsers] = useState<Users[]>([]);
-  const [interests, setInterests] = useState<Interests[]>([]);
 
   const getData = async () => {
     try {
@@ -42,7 +41,7 @@ function App() {
 
       let transformedUsers = usersResult.map((user) => {
 
-        let filteredInterests = usersInterests.filter((interest) => user?.interests?.find((i: number) => i == interest.id));
+        let filteredInterests = usersInterests.filter((interest) => user?.interests?.find((i: number) => i === interest.id));
 
         let transformedUser = {
           ...user,

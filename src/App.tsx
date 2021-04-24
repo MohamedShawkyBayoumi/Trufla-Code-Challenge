@@ -22,8 +22,8 @@ export interface DataTypes {
 
 function App() {
   const [users, setUsers] = useState<Users[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const getData = async () => {
     try {

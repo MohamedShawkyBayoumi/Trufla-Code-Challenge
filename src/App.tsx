@@ -8,6 +8,7 @@ export type Users = {
   following: number[];
   interests?: number[];
   interestsData?: Interests[];
+  followers: number;
 }
 
 export type Interests = {
@@ -18,6 +19,10 @@ export type Interests = {
 export interface DataTypes {
   users: Array<Users>;
   interests: Array<Interests>;
+}
+
+interface FollowerCountsTypes {
+  [key: string]: number
 }
 
 function App() {
@@ -34,9 +39,20 @@ function App() {
       const usersResult = [...result?.users];
       const usersInterests = [...result?.interests];
 
+      let followerCounts: FollowerCountsTypes = {};
+
       let transformedUsers = usersResult.map((user) => {
 
         let filteredInterests = usersInterests.filter((interest) => user?.interests?.find((i: number) => i === interest.id));
+
+        user.following.forEach((follower) => {
+
+          if(followerCounts[follower]){
+            followerCounts[follower]++
+          } else {
+            followerCounts[follower] = 1;
+          }
+        });
 
         let transformedUser = {
           ...user,
@@ -46,7 +62,10 @@ function App() {
         return transformedUser;
       });
 
-      setUsers(transformedUsers);
+      // map through the transformedUsers to append followers count for each user
+      const usersWithFollowers = transformedUsers.map((user) => ({ ...user, followers: followerCounts[user.id] ?? 0 }));
+
+      setUsers(usersWithFollowers);
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
@@ -57,7 +76,6 @@ function App() {
   useEffect(() => {
     getData();
   }, []);
-
   return (
     <div className="app">
       <Home

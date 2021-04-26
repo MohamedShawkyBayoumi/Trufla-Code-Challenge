@@ -85,7 +85,7 @@ function Home({ users = [], setUsers, isLoading, isError }: HomeTypes) {
 
         setUsers(copiedUsers);
     }
-
+    console.log('users', users);
     return (
         <div style={{ minHeight: '100vh' }}>
             <AppBar position="static">

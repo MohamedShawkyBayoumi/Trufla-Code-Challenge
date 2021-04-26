@@ -66,6 +66,7 @@ function App() {
       // map through the transformedUsers to append followers count for each user
       const usersWithFollowers = transformedUsers.map((user) => ({ ...user, followers: followerCounts[user.id] ?? 0 }));
 
+      // sort the users depends on the followers count
       const sortedUsers = usersWithFollowers.sort((n1, n2) => n2.followers - n1.followers);
 
       setUsers(sortedUsers);

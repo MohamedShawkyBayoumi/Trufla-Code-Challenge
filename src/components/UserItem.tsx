@@ -19,18 +19,19 @@ interface UserItemTypes {
     id: number;
     userIndex: number;
     name: string;
+    followers: number;
 }
 
 export function UserItem({
     handleClick,
     deleteUser,
     interests,
-    following,
     interestsData,
     isActive,
     id,
     userIndex,
-    name
+    name,
+    followers
 }: UserItemTypes) {
     const classes = useStyles();
     return (
@@ -39,11 +40,6 @@ export function UserItem({
                 <AccountBox />
             </ListItemIcon>
             <ListItemText primary={name} />
-            {following.map((count) => (
-                <Badge badgeContent={count} color='primary' className={classes.badgeStyles} key={count}>
-                    <AccountCircle color='disabled' />
-                </Badge>
-            ))}
             {interestsData.length ? (
                 <>
                     {isActive ? <ExpandLess /> : <ExpandMore />}
@@ -54,6 +50,9 @@ export function UserItem({
             >
                 <Delete color='error' />
             </Button>
+            <Badge badgeContent={followers} color='primary' className={classes.badgeStyles} key={followers}>
+                <AccountCircle color='disabled' />
+            </Badge>
         </ListItem>
     )
 }

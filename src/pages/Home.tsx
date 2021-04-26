@@ -85,7 +85,6 @@ function Home({ users = [], setUsers, isLoading, isError }: HomeTypes) {
 
         setUsers(copiedUsers);
     }
-    console.log('users', users);
     return (
         <div style={{ minHeight: '100vh' }}>
             <AppBar position="static">
@@ -114,7 +113,7 @@ function Home({ users = [], setUsers, isLoading, isError }: HomeTypes) {
                                 <CircularProgress />
                             </Box>
                         ) : 
-                            users.length ? users.map(({ id, name, following = [], interests = [], interestsData = [] }, userIndex) => {
+                            users.length ? users.map(({ id, name, following = [], interests = [], interestsData = [], followers }, userIndex) => {
                                 const isActive = !!activeIDs[`${id}_${userIndex}`];
                                 return(
                                     <Box key={id}>
@@ -124,6 +123,7 @@ function Home({ users = [], setUsers, isLoading, isError }: HomeTypes) {
                                             following={following}
                                             handleClick={handleClick}
                                             id={id}
+                                            followers={followers}
                                             interests={interests}
                                             interestsData={interestsData}
                                             name={name}

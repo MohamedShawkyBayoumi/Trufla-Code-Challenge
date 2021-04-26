@@ -43,10 +43,11 @@ function App() {
 
       let transformedUsers = usersResult.map((user) => {
 
+        // to match the user interest from the other array of interests
         let filteredInterests = usersInterests.filter((interest) => user?.interests?.find((i: number) => i === interest.id));
 
+        // to keep track of followers
         user.following.forEach((follower) => {
-
           if(followerCounts[follower]){
             followerCounts[follower]++
           } else {
@@ -65,7 +66,9 @@ function App() {
       // map through the transformedUsers to append followers count for each user
       const usersWithFollowers = transformedUsers.map((user) => ({ ...user, followers: followerCounts[user.id] ?? 0 }));
 
-      setUsers(usersWithFollowers);
+      const sortedUsers = usersWithFollowers.sort((n1, n2) => n2.followers - n1.followers);
+
+      setUsers(sortedUsers);
       setIsLoading(false);
     } catch (e) {
       setIsLoading(false);
